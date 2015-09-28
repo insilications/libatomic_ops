@@ -5,7 +5,7 @@
 %define keepstatic 1
 Name     : libatomic_ops
 Version  : 7_4_2
-Release  : 8
+Release  : 9
 URL      : https://github.com/ivmai/libatomic_ops/archive/libatomic_ops-7_4_2.tar.gz
 Source0  : https://github.com/ivmai/libatomic_ops/archive/libatomic_ops-7_4_2.tar.gz
 Summary  : Atomic memory update operations
