@@ -5,7 +5,7 @@
 %define keepstatic 1
 Name     : libatomic_ops
 Version  : 7.4.4
-Release  : 12
+Release  : 13
 URL      : https://github.com/ivmai/libatomic_ops/archive/libatomic_ops-7_4_4.tar.gz
 Source0  : https://github.com/ivmai/libatomic_ops/archive/libatomic_ops-7_4_4.tar.gz
 Summary  : Atomic memory update operations portable implementation
@@ -41,7 +41,11 @@ dev components for the libatomic_ops package.
 
 %build
 export LANG=C
-export SOURCE_DATE_EPOCH=1483735338
+export SOURCE_DATE_EPOCH=1483735650
+export CFLAGS="$CFLAGS -O3 -falign-functions=32 -fno-semantic-interposition "
+export FCFLAGS="$CFLAGS -O3 -falign-functions=32 -fno-semantic-interposition "
+export FFLAGS="$CFLAGS -O3 -falign-functions=32 -fno-semantic-interposition "
+export CXXFLAGS="$CXXFLAGS -O3 -falign-functions=32 -fno-semantic-interposition "
 %autogen
 make V=1  %{?_smp_mflags}
 
