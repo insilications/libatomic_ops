@@ -4,11 +4,11 @@
 #
 %define keepstatic 1
 Name     : libatomic_ops
-Version  : 7_4_2
-Release  : 11
-URL      : https://github.com/ivmai/libatomic_ops/archive/libatomic_ops-7_4_2.tar.gz
-Source0  : https://github.com/ivmai/libatomic_ops/archive/libatomic_ops-7_4_2.tar.gz
-Summary  : Atomic memory update operations
+Version  : 7.4.4
+Release  : 12
+URL      : https://github.com/ivmai/libatomic_ops/archive/libatomic_ops-7_4_4.tar.gz
+Source0  : https://github.com/ivmai/libatomic_ops/archive/libatomic_ops-7_4_4.tar.gz
+Summary  : Atomic memory update operations portable implementation
 Group    : Development/Tools
 License  : GPL-2.0
 Requires: libatomic_ops-data
@@ -30,22 +30,26 @@ data components for the libatomic_ops package.
 Summary: dev components for the libatomic_ops package.
 Group: Development
 Requires: libatomic_ops-data
+Provides: libatomic_ops-devel
 
 %description dev
 dev components for the libatomic_ops package.
 
 
 %prep
-%setup -q -n libatomic_ops-libatomic_ops-7_4_2
+%setup -q -n libatomic_ops-libatomic_ops-7_4_4
 
 %build
+export LANG=C
+export SOURCE_DATE_EPOCH=1483735338
 %autogen
 make V=1  %{?_smp_mflags}
 
 %check
+export LANG=C
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
-export no_proxy=intel.com,localhost
+export no_proxy=localhost
 make VERBOSE=1 V=1 %{?_smp_mflags} check
 
 %install
@@ -130,4 +134,4 @@ rm -rf %{buildroot}
 /usr/include/atomic_ops/sysdeps/test_and_set_t_is_ao_t.h
 /usr/include/atomic_ops/sysdeps/test_and_set_t_is_char.h
 /usr/lib64/*.a
-/usr/lib64/pkgconfig/*.pc
+/usr/lib64/pkgconfig/atomic_ops.pc
