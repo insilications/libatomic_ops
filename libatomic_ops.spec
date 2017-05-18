@@ -4,74 +4,67 @@
 #
 %define keepstatic 1
 Name     : libatomic_ops
-Version  : 7.4.4
-Release  : 14
-URL      : https://github.com/ivmai/libatomic_ops/archive/libatomic_ops-7_4_4.tar.gz
-Source0  : https://github.com/ivmai/libatomic_ops/archive/libatomic_ops-7_4_4.tar.gz
+Version  : 7.4.6
+Release  : 15
+URL      : https://github.com/ivmai/libatomic_ops/releases/download/v7.4.6/libatomic_ops-7.4.6.tar.gz
+Source0  : https://github.com/ivmai/libatomic_ops/releases/download/v7.4.6/libatomic_ops-7.4.6.tar.gz
 Summary  : Atomic memory update operations portable implementation
 Group    : Development/Tools
 License  : GPL-2.0
-Requires: libatomic_ops-data
+Requires: libatomic_ops-doc
 
 %description
 There are two kinds of entities in this directory:
 - Subdirectories corresponding to specific compilers (or compiler/OS combinations).
 Each of these includes one or more architecture-specific headers.
 
-%package data
-Summary: data components for the libatomic_ops package.
-Group: Data
-
-%description data
-data components for the libatomic_ops package.
-
-
 %package dev
 Summary: dev components for the libatomic_ops package.
 Group: Development
-Requires: libatomic_ops-data
 Provides: libatomic_ops-devel
 
 %description dev
 dev components for the libatomic_ops package.
 
 
+%package doc
+Summary: doc components for the libatomic_ops package.
+Group: Documentation
+
+%description doc
+doc components for the libatomic_ops package.
+
+
 %prep
-%setup -q -n libatomic_ops-libatomic_ops-7_4_4
+%setup -q -n libatomic_ops-7.4.6
 
 %build
+export http_proxy=http://127.0.0.1:9/
+export https_proxy=http://127.0.0.1:9/
+export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1483735650
+export SOURCE_DATE_EPOCH=1495136168
 export CFLAGS="$CFLAGS -O3 -falign-functions=32 -fno-semantic-interposition "
 export FCFLAGS="$CFLAGS -O3 -falign-functions=32 -fno-semantic-interposition "
 export FFLAGS="$CFLAGS -O3 -falign-functions=32 -fno-semantic-interposition "
 export CXXFLAGS="$CXXFLAGS -O3 -falign-functions=32 -fno-semantic-interposition "
-%autogen
+%configure
 make V=1  %{?_smp_mflags}
 
 %check
 export LANG=C
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
-export no_proxy=localhost
+export no_proxy=localhost,127.0.0.1,0.0.0.0
 make VERBOSE=1 V=1 %{?_smp_mflags} check
 
 %install
+export SOURCE_DATE_EPOCH=1495136168
 rm -rf %{buildroot}
 %make_install
 
 %files
 %defattr(-,root,root,-)
-
-%files data
-%defattr(-,root,root,-)
-/usr/share/libatomic_ops/COPYING
-/usr/share/libatomic_ops/LICENSING.txt
-/usr/share/libatomic_ops/README.md
-/usr/share/libatomic_ops/README.txt
-/usr/share/libatomic_ops/README_malloc.txt
-/usr/share/libatomic_ops/README_stack.txt
-/usr/share/libatomic_ops/README_win32.txt
 
 %files dev
 %defattr(-,root,root,-)
@@ -139,3 +132,7 @@ rm -rf %{buildroot}
 /usr/include/atomic_ops/sysdeps/test_and_set_t_is_char.h
 /usr/lib64/*.a
 /usr/lib64/pkgconfig/atomic_ops.pc
+
+%files doc
+%defattr(-,root,root,-)
+%doc /usr/share/doc/libatomic_ops/*
