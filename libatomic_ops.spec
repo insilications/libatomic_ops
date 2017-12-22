@@ -4,10 +4,10 @@
 #
 %define keepstatic 1
 Name     : libatomic_ops
-Version  : 7.4.8
-Release  : 17
-URL      : https://github.com/ivmai/libatomic_ops/releases/download/v7.4.8/libatomic_ops-7.4.8.tar.gz
-Source0  : https://github.com/ivmai/libatomic_ops/releases/download/v7.4.8/libatomic_ops-7.4.8.tar.gz
+Version  : 7.4.10
+Release  : 18
+URL      : https://github.com/ivmai/libatomic_ops/releases/download/v7.4.10/libatomic_ops-7.4.10.tar.gz
+Source0  : https://github.com/ivmai/libatomic_ops/releases/download/v7.4.10/libatomic_ops-7.4.10.tar.gz
 Summary  : Atomic memory update operations portable implementation
 Group    : Development/Tools
 License  : GPL-2.0
@@ -36,20 +36,20 @@ doc components for the libatomic_ops package.
 
 
 %prep
-%setup -q -n libatomic_ops-7.4.8
+%setup -q -n libatomic_ops-7.4.10
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1508351317
+export SOURCE_DATE_EPOCH=1513977886
 export CFLAGS="$CFLAGS -O3 -falign-functions=32 -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
 export FCFLAGS="$CFLAGS -O3 -falign-functions=32 -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
 export FFLAGS="$CFLAGS -O3 -falign-functions=32 -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
 export CXXFLAGS="$CXXFLAGS -O3 -falign-functions=32 -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
 %configure
-make V=1  %{?_smp_mflags}
+make  %{?_smp_mflags}
 
 %check
 export LANG=C
@@ -59,7 +59,7 @@ export no_proxy=localhost,127.0.0.1,0.0.0.0
 make VERBOSE=1 V=1 %{?_smp_mflags} check
 
 %install
-export SOURCE_DATE_EPOCH=1508351317
+export SOURCE_DATE_EPOCH=1513977886
 rm -rf %{buildroot}
 %make_install
 
