@@ -4,14 +4,14 @@
 #
 %define keepstatic 1
 Name     : libatomic_ops
-Version  : 7.6.6
-Release  : 21
-URL      : https://github.com/ivmai/libatomic_ops/releases/download/v7.6.6/libatomic_ops-7.6.6.tar.gz
-Source0  : https://github.com/ivmai/libatomic_ops/releases/download/v7.6.6/libatomic_ops-7.6.6.tar.gz
-Summary  : Atomic memory update operations portable implementation
+Version  : 7.6.8
+Release  : 22
+URL      : https://github.com/ivmai/libatomic_ops/releases/download/v7.6.8/libatomic_ops-7.6.8.tar.gz
+Source0  : https://github.com/ivmai/libatomic_ops/releases/download/v7.6.8/libatomic_ops-7.6.8.tar.gz
+Summary  : Atomic memory update operations
 Group    : Development/Tools
 License  : GPL-2.0
-Requires: libatomic_ops-license
+Requires: libatomic_ops-license = %{version}-%{release}
 
 %description
 There are two kinds of entities in this directory:
@@ -21,7 +21,7 @@ Each of these includes one or more architecture-specific headers.
 %package dev
 Summary: dev components for the libatomic_ops package.
 Group: Development
-Provides: libatomic_ops-devel
+Provides: libatomic_ops-devel = %{version}-%{release}
 
 %description dev
 dev components for the libatomic_ops package.
@@ -44,14 +44,14 @@ license components for the libatomic_ops package.
 
 
 %prep
-%setup -q -n libatomic_ops-7.6.6
+%setup -q -n libatomic_ops-7.6.8
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1536643403
+export SOURCE_DATE_EPOCH=1545532770
 export CFLAGS="$CFLAGS -O3 -falign-functions=32 -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
 export FCFLAGS="$CFLAGS -O3 -falign-functions=32 -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
 export FFLAGS="$CFLAGS -O3 -falign-functions=32 -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
@@ -67,10 +67,10 @@ export no_proxy=localhost,127.0.0.1,0.0.0.0
 make VERBOSE=1 V=1 %{?_smp_mflags} check
 
 %install
-export SOURCE_DATE_EPOCH=1536643403
+export SOURCE_DATE_EPOCH=1545532770
 rm -rf %{buildroot}
-mkdir -p %{buildroot}/usr/share/doc/libatomic_ops
-cp COPYING %{buildroot}/usr/share/doc/libatomic_ops/COPYING
+mkdir -p %{buildroot}/usr/share/package-licenses/libatomic_ops
+cp COPYING %{buildroot}/usr/share/package-licenses/libatomic_ops/COPYING
 %make_install
 
 %files
@@ -78,7 +78,7 @@ cp COPYING %{buildroot}/usr/share/doc/libatomic_ops/COPYING
 
 %files dev
 %defattr(-,root,root,-)
-/usr/include/atomic_ops.h
+/usr/include/*.h
 /usr/include/atomic_ops/ao_version.h
 /usr/include/atomic_ops/generalize-arithm.h
 /usr/include/atomic_ops/generalize-small.h
@@ -142,21 +142,13 @@ cp COPYING %{buildroot}/usr/share/doc/libatomic_ops/COPYING
 /usr/include/atomic_ops/sysdeps/sunc/x86.h
 /usr/include/atomic_ops/sysdeps/test_and_set_t_is_ao_t.h
 /usr/include/atomic_ops/sysdeps/test_and_set_t_is_char.h
-/usr/include/atomic_ops_malloc.h
-/usr/include/atomic_ops_stack.h
-/usr/lib64/libatomic_ops.a
-/usr/lib64/libatomic_ops_gpl.a
+/usr/lib64/*.a
 /usr/lib64/pkgconfig/atomic_ops.pc
 
 %files doc
 %defattr(0644,root,root,0755)
-%doc /usr/share/doc/libatomic_ops/LICENSING.txt
-%doc /usr/share/doc/libatomic_ops/README.md
-%doc /usr/share/doc/libatomic_ops/README_details.txt
-%doc /usr/share/doc/libatomic_ops/README_malloc.txt
-%doc /usr/share/doc/libatomic_ops/README_stack.txt
-%doc /usr/share/doc/libatomic_ops/README_win32.txt
+%doc /usr/share/doc/libatomic_ops/*
 
 %files license
-%defattr(-,root,root,-)
-/usr/share/doc/libatomic_ops/COPYING
+%defattr(0644,root,root,0755)
+/usr/share/package-licenses/libatomic_ops/COPYING
