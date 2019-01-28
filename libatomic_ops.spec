@@ -5,12 +5,13 @@
 %define keepstatic 1
 Name     : libatomic_ops
 Version  : 7.6.8
-Release  : 22
+Release  : 23
 URL      : https://github.com/ivmai/libatomic_ops/releases/download/v7.6.8/libatomic_ops-7.6.8.tar.gz
 Source0  : https://github.com/ivmai/libatomic_ops/releases/download/v7.6.8/libatomic_ops-7.6.8.tar.gz
 Summary  : Atomic memory update operations
 Group    : Development/Tools
 License  : GPL-2.0
+Requires: libatomic_ops-lib = %{version}-%{release}
 Requires: libatomic_ops-license = %{version}-%{release}
 
 %description
@@ -21,6 +22,7 @@ Each of these includes one or more architecture-specific headers.
 %package dev
 Summary: dev components for the libatomic_ops package.
 Group: Development
+Requires: libatomic_ops-lib = %{version}-%{release}
 Provides: libatomic_ops-devel = %{version}-%{release}
 
 %description dev
@@ -33,6 +35,15 @@ Group: Documentation
 
 %description doc
 doc components for the libatomic_ops package.
+
+
+%package lib
+Summary: lib components for the libatomic_ops package.
+Group: Libraries
+Requires: libatomic_ops-license = %{version}-%{release}
+
+%description lib
+lib components for the libatomic_ops package.
 
 
 %package license
@@ -51,12 +62,12 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1545532770
+export SOURCE_DATE_EPOCH=1548717173
 export CFLAGS="$CFLAGS -O3 -falign-functions=32 -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
 export FCFLAGS="$CFLAGS -O3 -falign-functions=32 -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
 export FFLAGS="$CFLAGS -O3 -falign-functions=32 -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
 export CXXFLAGS="$CXXFLAGS -O3 -falign-functions=32 -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
-%configure
+%configure  --enable-shared
 make  %{?_smp_mflags}
 
 %check
@@ -67,7 +78,7 @@ export no_proxy=localhost,127.0.0.1,0.0.0.0
 make VERBOSE=1 V=1 %{?_smp_mflags} check
 
 %install
-export SOURCE_DATE_EPOCH=1545532770
+export SOURCE_DATE_EPOCH=1548717173
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/libatomic_ops
 cp COPYING %{buildroot}/usr/share/package-licenses/libatomic_ops/COPYING
@@ -143,11 +154,20 @@ cp COPYING %{buildroot}/usr/share/package-licenses/libatomic_ops/COPYING
 /usr/include/atomic_ops/sysdeps/test_and_set_t_is_ao_t.h
 /usr/include/atomic_ops/sysdeps/test_and_set_t_is_char.h
 /usr/lib64/*.a
+/usr/lib64/libatomic_ops.so
+/usr/lib64/libatomic_ops_gpl.so
 /usr/lib64/pkgconfig/atomic_ops.pc
 
 %files doc
 %defattr(0644,root,root,0755)
 %doc /usr/share/doc/libatomic_ops/*
+
+%files lib
+%defattr(-,root,root,-)
+/usr/lib64/libatomic_ops.so.1
+/usr/lib64/libatomic_ops.so.1.1.1
+/usr/lib64/libatomic_ops_gpl.so.1
+/usr/lib64/libatomic_ops_gpl.so.1.1.2
 
 %files license
 %defattr(0644,root,root,0755)
