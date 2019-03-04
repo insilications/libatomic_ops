@@ -4,26 +4,28 @@
 #
 %define keepstatic 1
 Name     : libatomic_ops
-Version  : 7.6.8
-Release  : 24
-URL      : https://github.com/ivmai/libatomic_ops/releases/download/v7.6.8/libatomic_ops-7.6.8.tar.gz
-Source0  : https://github.com/ivmai/libatomic_ops/releases/download/v7.6.8/libatomic_ops-7.6.8.tar.gz
-Summary  : Atomic memory update operations
+Version  : 7.6.10
+Release  : 25
+URL      : https://github.com/ivmai/libatomic_ops/releases/download/v7.6.10/libatomic_ops-7.6.10.tar.gz
+Source0  : https://github.com/ivmai/libatomic_ops/releases/download/v7.6.10/libatomic_ops-7.6.10.tar.gz
+Summary  : Provides semi-portable access to hardware provided atomic memory operations
 Group    : Development/Tools
 License  : GPL-2.0
 Requires: libatomic_ops-lib = %{version}-%{release}
 Requires: libatomic_ops-license = %{version}-%{release}
 
 %description
-There are two kinds of entities in this directory:
-- Subdirectories corresponding to specific compilers (or compiler/OS combinations).
-Each of these includes one or more architecture-specific headers.
+The libatomic_ops_gpl includes a simple almost-lock-free malloc implementation.
+This is intended as a safe way to allocate memory from a signal handler,
+or to allocate memory in the context of a library that does not know what
+thread library it will be used with.  In either case locking is impossible.
 
 %package dev
 Summary: dev components for the libatomic_ops package.
 Group: Development
 Requires: libatomic_ops-lib = %{version}-%{release}
 Provides: libatomic_ops-devel = %{version}-%{release}
+Requires: libatomic_ops = %{version}-%{release}
 
 %description dev
 dev components for the libatomic_ops package.
@@ -55,14 +57,15 @@ license components for the libatomic_ops package.
 
 
 %prep
-%setup -q -n libatomic_ops-7.6.8
+%setup -q -n libatomic_ops-7.6.10
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1548717173
+export SOURCE_DATE_EPOCH=1551742094
+export LDFLAGS="${LDFLAGS} -fno-lto"
 export CFLAGS="$CFLAGS -O3 -falign-functions=32 -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
 export FCFLAGS="$CFLAGS -O3 -falign-functions=32 -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
 export FFLAGS="$CFLAGS -O3 -falign-functions=32 -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
@@ -78,7 +81,7 @@ export no_proxy=localhost,127.0.0.1,0.0.0.0
 make VERBOSE=1 V=1 %{?_smp_mflags} check
 
 %install
-export SOURCE_DATE_EPOCH=1548717173
+export SOURCE_DATE_EPOCH=1551742094
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/libatomic_ops
 cp COPYING %{buildroot}/usr/share/package-licenses/libatomic_ops/COPYING
