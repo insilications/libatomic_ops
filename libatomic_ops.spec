@@ -5,7 +5,7 @@
 %define keepstatic 1
 Name     : libatomic_ops
 Version  : 7.6.10
-Release  : 26
+Release  : 27
 URL      : https://github.com/ivmai/libatomic_ops/releases/download/v7.6.10/libatomic_ops-7.6.10.tar.gz
 Source0  : https://github.com/ivmai/libatomic_ops/releases/download/v7.6.10/libatomic_ops-7.6.10.tar.gz
 Summary  : Provides semi-portable access to hardware provided atomic memory operations
@@ -13,6 +13,11 @@ Group    : Development/Tools
 License  : GPL-2.0
 Requires: libatomic_ops-lib = %{version}-%{release}
 Requires: libatomic_ops-license = %{version}-%{release}
+BuildRequires : gcc-dev32
+BuildRequires : gcc-libgcc32
+BuildRequires : gcc-libstdc++32
+BuildRequires : glibc-dev32
+BuildRequires : glibc-libc32
 
 %description
 The libatomic_ops_gpl includes a simple almost-lock-free malloc implementation.
@@ -26,9 +31,20 @@ Group: Development
 Requires: libatomic_ops-lib = %{version}-%{release}
 Provides: libatomic_ops-devel = %{version}-%{release}
 Requires: libatomic_ops = %{version}-%{release}
+Requires: libatomic_ops = %{version}-%{release}
 
 %description dev
 dev components for the libatomic_ops package.
+
+
+%package dev32
+Summary: dev32 components for the libatomic_ops package.
+Group: Default
+Requires: libatomic_ops-lib32 = %{version}-%{release}
+Requires: libatomic_ops-dev = %{version}-%{release}
+
+%description dev32
+dev32 components for the libatomic_ops package.
 
 
 %package doc
@@ -48,6 +64,15 @@ Requires: libatomic_ops-license = %{version}-%{release}
 lib components for the libatomic_ops package.
 
 
+%package lib32
+Summary: lib32 components for the libatomic_ops package.
+Group: Default
+Requires: libatomic_ops-license = %{version}-%{release}
+
+%description lib32
+lib32 components for the libatomic_ops package.
+
+
 %package license
 Summary: license components for the libatomic_ops package.
 Group: Default
@@ -56,35 +81,79 @@ Group: Default
 license components for the libatomic_ops package.
 
 
+%package staticdev
+Summary: staticdev components for the libatomic_ops package.
+Group: Default
+Requires: libatomic_ops-dev = %{version}-%{release}
+Requires: libatomic_ops-dev = %{version}-%{release}
+
+%description staticdev
+staticdev components for the libatomic_ops package.
+
+
+%package staticdev32
+Summary: staticdev32 components for the libatomic_ops package.
+Group: Default
+Requires: libatomic_ops-dev = %{version}-%{release}
+
+%description staticdev32
+staticdev32 components for the libatomic_ops package.
+
+
 %prep
 %setup -q -n libatomic_ops-7.6.10
+cd %{_builddir}/libatomic_ops-7.6.10
+pushd ..
+cp -a libatomic_ops-7.6.10 build32
+popd
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
-export LANG=C
-export SOURCE_DATE_EPOCH=1551742094
-export LDFLAGS="${LDFLAGS} -fno-lto"
-export CFLAGS="$CFLAGS -O3 -falign-functions=32 -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
-export FCFLAGS="$CFLAGS -O3 -falign-functions=32 -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
-export FFLAGS="$CFLAGS -O3 -falign-functions=32 -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
-export CXXFLAGS="$CXXFLAGS -O3 -falign-functions=32 -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
+export LANG=C.UTF-8
+export SOURCE_DATE_EPOCH=1587482616
+# -Werror is for werrorists
+export GCC_IGNORE_WERROR=1
+export CFLAGS="$CFLAGS -O3 -falign-functions=32 -fno-lto -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
+export FCFLAGS="$CFLAGS -O3 -falign-functions=32 -fno-lto -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
+export FFLAGS="$CFLAGS -O3 -falign-functions=32 -fno-lto -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
+export CXXFLAGS="$CXXFLAGS -O3 -falign-functions=32 -fno-lto -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
 %configure  --enable-shared
 make  %{?_smp_mflags}
 
+pushd ../build32/
+export PKG_CONFIG_PATH="/usr/lib32/pkgconfig"
+export ASFLAGS="${ASFLAGS}${ASFLAGS:+ }--32"
+export CFLAGS="${CFLAGS}${CFLAGS:+ }-m32 -mstackrealign"
+export CXXFLAGS="${CXXFLAGS}${CXXFLAGS:+ }-m32 -mstackrealign"
+export LDFLAGS="${LDFLAGS}${LDFLAGS:+ }-m32 -mstackrealign"
+%configure  --enable-shared   --libdir=/usr/lib32 --build=i686-generic-linux-gnu --host=i686-generic-linux-gnu --target=i686-clr-linux-gnu
+make  %{?_smp_mflags}
+popd
 %check
-export LANG=C
+export LANG=C.UTF-8
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 make VERBOSE=1 V=1 %{?_smp_mflags} check
+cd ../build32;
+make VERBOSE=1 V=1 %{?_smp_mflags} check || :
 
 %install
-export SOURCE_DATE_EPOCH=1551742094
+export SOURCE_DATE_EPOCH=1587482616
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/libatomic_ops
-cp COPYING %{buildroot}/usr/share/package-licenses/libatomic_ops/COPYING
+cp %{_builddir}/libatomic_ops-7.6.10/COPYING %{buildroot}/usr/share/package-licenses/libatomic_ops/4cc77b90af91e615a64ae04893fdffa7939db84c
+pushd ../build32/
+%make_install32
+if [ -d  %{buildroot}/usr/lib32/pkgconfig ]
+then
+pushd %{buildroot}/usr/lib32/pkgconfig
+for i in *.pc ; do ln -s $i 32$i ; done
+popd
+fi
+popd
 %make_install
 
 %files
@@ -92,7 +161,7 @@ cp COPYING %{buildroot}/usr/share/package-licenses/libatomic_ops/COPYING
 
 %files dev
 %defattr(-,root,root,-)
-/usr/include/*.h
+/usr/include/atomic_ops.h
 /usr/include/atomic_ops/ao_version.h
 /usr/include/atomic_ops/generalize-arithm.h
 /usr/include/atomic_ops/generalize-small.h
@@ -156,10 +225,18 @@ cp COPYING %{buildroot}/usr/share/package-licenses/libatomic_ops/COPYING
 /usr/include/atomic_ops/sysdeps/sunc/x86.h
 /usr/include/atomic_ops/sysdeps/test_and_set_t_is_ao_t.h
 /usr/include/atomic_ops/sysdeps/test_and_set_t_is_char.h
-/usr/lib64/*.a
+/usr/include/atomic_ops_malloc.h
+/usr/include/atomic_ops_stack.h
 /usr/lib64/libatomic_ops.so
 /usr/lib64/libatomic_ops_gpl.so
 /usr/lib64/pkgconfig/atomic_ops.pc
+
+%files dev32
+%defattr(-,root,root,-)
+/usr/lib32/libatomic_ops.so
+/usr/lib32/libatomic_ops_gpl.so
+/usr/lib32/pkgconfig/32atomic_ops.pc
+/usr/lib32/pkgconfig/atomic_ops.pc
 
 %files doc
 %defattr(0644,root,root,0755)
@@ -172,6 +249,23 @@ cp COPYING %{buildroot}/usr/share/package-licenses/libatomic_ops/COPYING
 /usr/lib64/libatomic_ops_gpl.so.1
 /usr/lib64/libatomic_ops_gpl.so.1.1.2
 
+%files lib32
+%defattr(-,root,root,-)
+/usr/lib32/libatomic_ops.so.1
+/usr/lib32/libatomic_ops.so.1.1.1
+/usr/lib32/libatomic_ops_gpl.so.1
+/usr/lib32/libatomic_ops_gpl.so.1.1.2
+
 %files license
 %defattr(0644,root,root,0755)
-/usr/share/package-licenses/libatomic_ops/COPYING
+/usr/share/package-licenses/libatomic_ops/4cc77b90af91e615a64ae04893fdffa7939db84c
+
+%files staticdev
+%defattr(-,root,root,-)
+/usr/lib64/libatomic_ops.a
+/usr/lib64/libatomic_ops_gpl.a
+
+%files staticdev32
+%defattr(-,root,root,-)
+/usr/lib32/libatomic_ops.a
+/usr/lib32/libatomic_ops_gpl.a

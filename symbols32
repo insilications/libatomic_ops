@@ -1,0 +1,9 @@
+libatomic_ops.so.1:AO_compare_double_and_swap_double_emulation
+libatomic_ops.so.1:AO_fetch_compare_and_swap_emulation
+libatomic_ops.so.1:AO_pause
+libatomic_ops.so.1:AO_store_full_emulation
+libatomic_ops_gpl.so.1:AO_free
+libatomic_ops_gpl.so.1:AO_malloc
+libatomic_ops_gpl.so.1:AO_malloc_enable_mmap
+libatomic_ops_gpl.so.1:AO_stack_pop_acquire
+libatomic_ops_gpl.so.1:AO_stack_push_release
