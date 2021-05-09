@@ -1,2 +1,21 @@
 # This file contains additional build requirements that did not get
 # picked up automatically. One name per line, no whitespace.
+autoconf
+binutils-dev
+buildreq-configure
+gcc
+gcc-dev
+gcc-dev32
+gcc-libgcc32
+gcc-libs-math
+gcc-libstdc++32
+glib
+glib-bin
+glibc
+glibc-dev
+glibc-dev32
+glibc-libc32
+glibc-staticdev
+glib-data
+glib-dev
+glib-lib
